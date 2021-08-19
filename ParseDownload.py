@@ -7,9 +7,6 @@ import re
 
 def download_short_video(link, timestamp, author):
 
-    json_data = get(link, True)
-    res = re.findall('type="video/mp4" src="(.*?)"', json_data)[0]
-
     # 将 timestamp 转换成 日期
     local = time.localtime(timestamp / 1000.0)
     times = time.strftime("%Y-%m-%d_%H-%M-%S", local)
@@ -21,7 +18,7 @@ def download_short_video(link, timestamp, author):
         f.write('file ' + str(times) + author + '.mp4\n')
 
     ff = FFmpeg(
-        inputs={res: None},
+        inputs={link: None},
         outputs={path + str(times) + author + '.mp4': None})
 
     ff.run()

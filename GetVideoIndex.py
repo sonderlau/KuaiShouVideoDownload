@@ -1,11 +1,15 @@
 import json
 from Configuration.GraphQLWrapper import post, request_get_all_videos
-
+from rich.console import Console
+console = Console()
 
 # 获取个人所有视频
-def get_all_videos(id, last_update, author_name):
-    res = post(request_get_all_videos(id))
-    print(res)
+def get_all_videos(user_id, last_update, author_name):
+
+    res = post(request_get_all_videos(user_id))
+
+    # 输出 获取到的个人页视频结果
+    # console.print(res)
 
     # 解析JSON
     feeds = json.loads(res)['data']['visionProfilePhotoList']['feeds']
@@ -18,9 +22,10 @@ def get_all_videos(id, last_update, author_name):
             #
             short_videos[feed['photo']['id']] = {
                 "timestamp": feed['photo']['timestamp'],
-                "author": author_name
+                "author": author_name,
+                # 真实下载地址
+                "download": feed['photo']['photoUrls'][0]['url']
             }
-    print(short_videos)
     return short_videos
 
 

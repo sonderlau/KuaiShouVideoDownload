@@ -4,7 +4,10 @@ from GetVideoIndex import get_all_videos
 from MergeVideoFile import merge_video_files
 from ParseDownload import download_short_video
 from Configuration.config import Configuration
+from rich.console import Console
 
+console = Console()
+#
 index = {
     '3x4g2b9attf6q9u': "成杰",
 
@@ -38,7 +41,7 @@ if __name__ == '__main__':
 
         # 对所有的作品进行时间的排序
         sorted(result, key=lambda x: result[x]['timestamp'])
-        print(result)
+        console.print(result)
 
         # 输入文件清空
         with open(Configuration().get_video_download_path() + 'in.md', 'w') as fl:
@@ -46,7 +49,7 @@ if __name__ == '__main__':
 
         # 对所有作品进行下载
         for key in result:
-            download_short_video(key, result[key]['timestamp'], result[key]['author'])
+            download_short_video(result[key]['download'], result[key]['timestamp'], result[key]['author'])
 
         # 合并视频
         merge_video_files()
