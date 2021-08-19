@@ -4,7 +4,7 @@ from configparser import ConfigParser
 class Configuration:
     def __init__(self):
         cfg = ConfigParser()
-        cfg.read("../config.ini")
+        cfg.read("./config.ini")
         self.cfg = cfg
 
     def get_prefix(self):
@@ -16,3 +16,6 @@ class Configuration:
     def get_video_download_path(self):
         return self.get_prefix() + self.cfg.get('Download', 'video_download_path')
 
+
+if __name__ == '__main__':
+    print(Configuration().get_video_download_path())
