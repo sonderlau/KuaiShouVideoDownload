@@ -1,14 +1,18 @@
-from PrivateConfig import headers
 import requests
+from Configuration.PrivateConfig import get_headers
 
 KuaiShouGraphQL = "https://www.kuaishou.com/graphql"
 KuaiShouShortVideos = "https://www.kuaishou.com/short-video/"
 
 
-def get(link, Referer=True):
-    link = KuaiShouShortVideos + link
+def get(url, referer=True):
+    link = KuaiShouShortVideos + url
+    if referer:
+        diy_head = get_headers(link)
+    else:
+        diy_head = get_headers("")
 
-    return requests.get(url=link, headers=get_headers(link if Referer else ""), allow_redirects=True).text
+    return requests.get(url=link, headers=diy_head, allow_redirects=False).text
 
 
 def post(js):
@@ -17,15 +21,10 @@ def post(js):
     return response.text
 
 
-def get_headers( link=""):
-    if link == "":
-        return headers
-    else:
-        h = headers['Referer'] = link
-        return h
 
 
-def request_get_home_infomation(userId):
+
+def request_get_home_information(userId):
     return {
         "operationName": "visionProfile",
         "query": "query visionProfile($userId: String) {  visionProfile(userId: $userId) {    result    hostName    "
@@ -36,6 +35,17 @@ def request_get_home_infomation(userId):
         "variables": {
             "userId": userId
         }
+    }
+
+
+def get_video_real_mp4_path(principle_id, photo_id):
+    return {
+        "operationName": "feedById",
+        "variables": {
+            "principalId": principle_id,
+            "photoId": photo_id
+        },
+        "query": "query feedById($principalId:String, $photoId:String){ currentWorkP{playUrl, poster} }"
     }
 
 
