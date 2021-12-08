@@ -1,8 +1,8 @@
 import time
-from Configuration.config import Configuration
+
 from ffmpy3 import FFmpeg
-from Configuration.GraphQLWrapper import get
-import re
+
+from Configuration.config import Configuration
 
 
 def download_short_video(link, timestamp, author):

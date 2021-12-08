@@ -1,11 +1,12 @@
 import json
 from Configuration.GraphQLWrapper import post, request_get_all_videos
 from rich.console import Console
+
 console = Console()
+
 
 # 获取个人所有视频
 def get_all_videos(user_id, last_update, author_name):
-
     res = post(request_get_all_videos(user_id))
 
     # 输出 获取到的个人页视频结果

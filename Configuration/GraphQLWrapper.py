@@ -21,9 +21,6 @@ def post(js):
     return response.text
 
 
-
-
-
 def request_get_home_information(userId):
     return {
         "operationName": "visionProfile",
