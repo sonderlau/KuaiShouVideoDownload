@@ -21,7 +21,15 @@ def post(js):
     return response.text
 
 
-def request_get_home_information(userId):
+def request_get_home_information(userId: str):
+    """个人主页信息
+
+    Args:
+        userId (str): 用户 ID
+
+    Returns:
+        Dict: 封装的请求
+    """
     return {
         "operationName": "visionProfile",
         "query": "query visionProfile($userId: String) {  visionProfile(userId: $userId) {    result    hostName    "
@@ -35,7 +43,16 @@ def request_get_home_information(userId):
     }
 
 
-def get_video_real_mp4_path(principle_id, photo_id):
+def get_video_real_mp4_path(principle_id: str, photo_id:str):
+    """解析视频下载地址
+
+    Args:
+        principle_id (str): gsd
+        photo_id (str): [description]
+
+    Returns:
+        [type]: [description]
+    """
     return {
         "operationName": "feedById",
         "variables": {
