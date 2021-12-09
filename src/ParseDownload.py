@@ -2,10 +2,20 @@ import time
 
 from ffmpy3 import FFmpeg
 
-from Configuration.config import Configuration
+from config.config import Configuration
 
 
-def download_short_video(link, timestamp, author):
+def download_short_video(link, timestamp, author) -> bool:
+    """下载视频
+
+    Args:
+        link (str): 下载地址
+        timestamp ([type]): 时间戳
+        author ([type]): 作者
+
+    Returns:
+        bool: 完成
+    """
 
     # 将 timestamp 转换成 日期
     local = time.localtime(timestamp / 1000.0)
@@ -22,4 +32,6 @@ def download_short_video(link, timestamp, author):
         outputs={path + str(times) + author + '.mp4': None})
 
     ff.run()
+    
+    return True
 

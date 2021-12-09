@@ -1,12 +1,18 @@
 import time
 
 from ffmpy3 import FFmpeg
-from config.config import Configuration
 
 
-def merge_video_files():
-    path = Configuration().get_merged_video_path()
-    in_path = Configuration().get_video_download_path()
+def merge_video_files(in_files: str, category: str) -> bool:
+    """合并视频
+
+    Args:
+        in_files (str): 输入视频文件的集合
+        category (str): 分类
+
+    Returns:
+        bool: 是否完成
+    """
     ff = FFmpeg(
         inputs={in_path + "in.md": "-f concat -safe 0"},
         outputs={
@@ -16,9 +22,8 @@ def merge_video_files():
         },
     )
     print(ff.cmd)
+    
     ff.run_async()
-    await ff.wait()
+    
+    return True
 
-
-if __name__ == "__main__":
-    merge_video_files()
