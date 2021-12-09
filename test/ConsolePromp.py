@@ -1,70 +1,28 @@
-# -*- coding: utf-8 -*-
-"""
-* Checkbox question example
-* run example by typing `python example/checkbox.py` in your console
-"""
-from pprint import pprint
+from InquirerPy import inquirer
+from InquirerPy.base.control import Choice
+from InquirerPy.separator import Separator
+from rich import print
+from collections import defaultdict
+from icecream import ic
+import json
+import time
 
-from PyInquirer import prompt, Separator
+time_unit = {
+    "d": 86400000,
+    "m": 2678400000
+}
 
-from examples import custom_style_2
+# 指定下载的时间
+print("请输入你想抓取的视频发布起始日期\n", "格式：13d / 1m")
+name = inquirer.text(message="请输入: ").execute()
 
+# 去空格
+name = str(name).rstrip().lstrip()
 
-questions = [
-    {
-        'type': 'checkbox',
-        'qmark': '😃',
-        'message': 'Select toppings',
-        'name': 'toppings',
-        'choices': [ 
-            Separator('= The Meats ='),
-            {
-                'name': 'Ham'
-            },
-            {
-                'name': 'Ground Meat'
-            },
-            {
-                'value': 'hhhh',
-                'name': 'Bacon'
-            },
-            Separator('= The Cheeses ='),
-            {
-                'name': 'Mozzarella',
-                'checked': True
-            },
-            {
-                'name': 'Cheddar'
-            },
-            {
-                'name': 'Parmesan'
-            },
-            Separator('= The usual ='),
-            {
-                'name': 'Mushroom'
-            },
-            {
-                'name': 'Tomato'
-            },
-            {
-                'name': 'Pepperoni'
-            },
-            Separator('= The extras ='),
-            {
-                'name': 'Pineapple'
-            },
-            {
-                'name': 'Olives',
-                'disabled': 'out of stock'
-            },
-            {
-                'name': 'Extra cheese'
-            }
-        ],
-        'validate': lambda answer: 'You must choose at least one topping.' \
-            if len(answer) == 0 else True
-    }
-]
+mil_seconds = int(name[:-2]) * time_unit[name[-1]]
 
-answers = prompt(questions, style=custom_style_2)
-pprint(answers)
+# 对 日期进行数位的对齐 取整
+now = round(time.time() * 1000) 
+
+target_timestamp = now - mil_seconds
+
