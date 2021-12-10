@@ -1,5 +1,5 @@
 import json
-from Configuration.GraphQLWrapper import post, request_get_all_videos
+from utils.GraphQLWrapper import post, request_get_all_videos
 from rich.console import Console
 
 
