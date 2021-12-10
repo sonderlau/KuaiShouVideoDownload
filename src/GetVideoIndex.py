@@ -1,4 +1,7 @@
 import json
+from threading import main_thread
+
+from rich.pretty import pprint
 from utils.GraphQLWrapper import post, request_get_all_videos
 from rich.console import Console
 
@@ -32,3 +35,7 @@ def get_all_videos(user_id, last_update, author_name):
 def get_home_page(id):
     res = post(get_home_page(id))
     print(res)
+
+if __name__ == '__main__':
+    r = get_all_videos("3x2k7pdreevzzn6", 1638933634482, "把子")
+    pprint(r)
