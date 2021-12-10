@@ -1,16 +1,22 @@
+import json
+import os
+from collections import defaultdict
+from concurrent.futures import ALL_COMPLETED, ThreadPoolExecutor, wait
+
+from icecream import ic
 from InquirerPy import inquirer
 from InquirerPy.base.control import Choice
 from InquirerPy.separator import Separator
 from rich.pretty import pprint
 from rich.progress import Progress
-from collections import defaultdict
-from icecream import ic
-from concurrent.futures import ThreadPoolExecutor
-import threading
-import json
-from utils.TimestampCalculate import target_timestamp
-from src.ParseDownload import download_short_video
+
 from src.GetVideoIndex import get_all_videos
+from src.ParseDownload import download_short_video
+from src.MergeVideoFile import merge_video_files
+from utils.TimestampCalculate import target_timestamp
+from config.config import Configuration
+
+config = Configuration()
 
 # 整理
 tasks = defaultdict(list)
@@ -74,7 +80,7 @@ with open("./config/subscription.json", "r") as fp:
 
 # 指定下载的时间
 
-ic(tasks)
+pprint(tasks)
 
 print("请输入你想抓取的视频发布起始日期\n", "格式：13d / 1m")
 
@@ -82,36 +88,61 @@ print("请输入你想抓取的视频发布起始日期\n", "格式：13d / 1m")
 timestamp = target_timestamp(inquirer.text(message="请输入: ").execute())
 
 # 以 类别 为任务单位 分配下载任务
-with Progress() as progress:
-    for category, _ in tasks.items():
 
-        # ? 任务进度条
-        task_progress = progress.add_task("[green]{}".format(category), total=len(_))
+for category, _ in tasks.items():
 
-        # ? 线程池
-        with ThreadPoolExecutor() as pool:
-            for one in _:
-                # 获取作者的主页视频
-                videos = get_all_videos(one["value"][0]["id"], timestamp, one["name"])
-                # 此作者的 所有待下载视频个数
-                videos_count = len(videos)
-                for each_video_k, each_video_v in videos.items():
-                    # 提交一个视频的下载
-                    task_pool = pool.submit(
-                        download_short_video,
-                        each_video_v["download"],
-                        each_video_v["timestamp"],
-                        each_video_v["author"],
-                        category,
-                    )
+    # ? 线程池
+    with ThreadPoolExecutor() as pool:
+        thread_pool_list = []
+        for one in _:
+            # 获取作者的主页视频
+            pprint([one["value"][0]["id"], timestamp, one["name"]])
+            videos = get_all_videos(one["value"][0]["id"], timestamp, one["name"])
+            pprint(videos)
+            # 此作者的 所有待下载视频个数
+            for each_video_k, each_video_v in videos.items():
+                # 提交一个视频的下载
+                task_pool = pool.submit(
+                    download_short_video,
+                    each_video_v["download"],
+                    each_video_v["timestamp"],
+                    each_video_v["author"],
+                    category,
+                )
 
-                    def push_progress():
-                        progress.update(
-                            task_progress, advance=1 / videos_count / len(_)
-                        )
+                thread_pool_list.append(task_pool)
 
-                    # 推进进度条
-                    task_pool.add_done_callback(push_progress)
+        wait(thread_pool_list, return_when=ALL_COMPLETED)
+
+        # 以 类别 位单位 合并每个分类内的视频
+    with open(
+        config.get_video_download_path() + category + ".in",
+        mode="w",
+        encoding="utf-8",
+    ) as ff:
+        # 清空文件内容
+        ff.write("")
+
+    with open(
+        config.get_video_download_path() + category + ".in",
+        mode="a",
+        encoding="utf-8",
+    ) as ff:
+        # 遍历 属于当前分类的 mp4 文件
+        for root, ds, fs in os.walk(config.get_video_download_path()):
+            for filename in fs:
+                if os.path.splitext(filename)[1] == ".mp4" and filename.startswith(
+                    category
+                ):
+                    ff.write("file " + filename + "\n")
 
 
-# 以 类别 位单位 合并每个分类内的视频
+# 合并
+pprint("开始合并")
+for root, ds, fs in os.walk(config.get_video_download_path()):
+    for filename in fs:
+        if os.path.splitext(filename)[1] == ".in":
+            #! magic trick
+            category = filename[:-3]
+
+            merge_video_files(category)
