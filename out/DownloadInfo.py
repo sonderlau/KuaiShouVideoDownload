@@ -1,6 +1,7 @@
 import subprocess
-from ffmpy3 import FFmpeg
+
 from config.config import Configuration
+from ffmpy3 import FFmpeg
 
 config = Configuration()
 
@@ -18,7 +19,7 @@ cmd = [
 process = subprocess.Popen(
     cmd,
     shell=True,
-    stdout=subprocess.PIPE,
+    stdout=subprocess.STDOUT,
     stderr=subprocess.STDOUT,
     encoding="utf-8",
     text=True,
