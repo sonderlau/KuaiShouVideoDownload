@@ -118,6 +118,3 @@ dmypy.json
 
 # IDE
 .idea/
-
-# Private Configuration
-/Configuration/PrivateConfig.py
