@@ -16,7 +16,7 @@ def target_timestamp(raw: str) -> int:
     # 去空格
     name = str(raw).rstrip().lstrip()
 
-    mil_seconds = int(name[:-2]) * time_unit[name[-1]]
+    mil_seconds = int(name[:-1]) * time_unit[name[-1]]
 
     # 对 日期进行数位的对齐 取整
     now = round(time.time() * 1000) 
