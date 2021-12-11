@@ -13,6 +13,14 @@ time_unit = {
 }
 
 def target_timestamp(raw: str) -> int:
+    """日期的 raw 格式 返回 timestamp
+
+    Args:
+        raw (str): 1d 1m 等
+
+    Returns:
+        int: timestamp 对齐至 毫秒
+    """
     # 去空格
     name = str(raw).rstrip().lstrip()
 

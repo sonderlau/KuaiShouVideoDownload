@@ -6,6 +6,15 @@ KuaiShouShortVideos = "https://www.kuaishou.com/short-video/"
 
 
 def get(url, referer=True):
+    """向 KuaishouGraphQL 发送 Get 请求
+
+    Args:
+        url (str): URL 地址
+        referer (bool, optional): 是否添加 Referer 表头. Defaults to True.
+
+    Returns:
+        Dict: response.text
+    """
     link = KuaiShouShortVideos + url
     if referer:
         diy_head = get_headers(link)
@@ -15,7 +24,16 @@ def get(url, referer=True):
     return requests.get(url=link, headers=diy_head, allow_redirects=False).text
 
 
-def post(js):
+def post(js: dict):
+    """向 KuaishouGraphQL 发送 POST 请求
+
+    Args:
+        js (dict): 封装的请求
+
+    Returns:
+        Dict: response.text
+    """
+    
     response = requests.post(url=KuaiShouGraphQL, json=js, headers=get_headers())
     response.encoding = 'utf-8'
     return response.text

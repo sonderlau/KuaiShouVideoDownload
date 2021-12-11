@@ -7,7 +7,17 @@ from rich.console import Console
 
 
 # 获取个人所有视频
-def get_all_videos(user_id, last_update, author_name):
+def get_all_videos(user_id: str, last_update: str, author_name: str):
+    """获取所有的视频
+
+    Args:
+        user_id (str): 用户id
+        last_update (str): 最后更新时间
+        author_name (str): 作者名称
+
+    Returns:
+        Dict: 视频集合
+    """
     res = post(request_get_all_videos(user_id))
 
     # 输出 获取到的个人页视频结果
