@@ -3,7 +3,7 @@ import time
 from ffmpy3 import FFmpeg
 
 from config.config import Configuration
-
+from rich import print
 
 def download_short_video(link, timestamp, author, category) -> bool:
     """下载视频
@@ -17,7 +17,7 @@ def download_short_video(link, timestamp, author, category) -> bool:
     Returns:
         bool: 完成
     """
-    print("开始下载")
+    print(":fire:开始下载")
     # 将 timestamp 转换成 日期
     local = time.localtime(timestamp / 1000.0)
     times = time.strftime("%Y-%m-%d_%H-%M-%S", local)
@@ -30,7 +30,7 @@ def download_short_video(link, timestamp, author, category) -> bool:
 
     ff = FFmpeg(
         inputs={link: None},
-        outputs={path + str(times) + author + '.mp4': None})
+        outputs={path + str(times) + author + '.mp4': "-loglevel quiet"})
 
     ff.run()
     

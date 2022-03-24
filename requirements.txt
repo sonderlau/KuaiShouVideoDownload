@@ -2,3 +2,4 @@ ffmpy3>=0.2.4
 rich>=10.7.0
 requests>=2.22.0
 InquirerPy
+icecream
